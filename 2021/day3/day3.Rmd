@@ -1,0 +1,43 @@
+---
+title: "day3"
+author: "stephane.soulier"
+date: "12/4/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readr)
+library(dplyr)
+library(RcppRoll)
+```
+
+```{r}
+input_path = '~/repo/adventofcode/2021/day3/input.txt'
+```
+
+
+## Part 1
+
+```{r}
+read_csv(file=input_path, col_names = c('value')) %>% 
+  mutate(value_as_string = as.character(value)) %>% 
+  mutate(str_match_all(value_as_string, '\\d'))
+  group_by(command) %>% 
+  summarise(n = sum(value)) %>% 
+  ungroup() %>% 
+  summarise(sum(sum(ifelse(command=='down', 1, ifelse(command=='up',-1, 0)) * n) *ifelse(command == 'forward', n, 0)))
+```
+
+
+## Part 2
+
+```{r}
+read_delim(file=input_path, delim=' ', col_names = c('command', 'value')) %>% 
+  mutate(value_for_aim = ifelse(command=="down", value, ifelse(command == "up", -value, 0)),
+          horizontal = ifelse(command=="forward", value, 0)) %>%
+  mutate(aim = cumsum(value_for_aim)) %>% 
+  mutate(depth = aim*horizontal) %>% 
+  summarise(sum(depth) * sum(horizontal))
+```
+

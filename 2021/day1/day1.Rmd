@@ -1,0 +1,37 @@
+---
+title: "day1"
+author: "stephane.soulier"
+date: "12/4/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readr)
+library(dplyr)
+library(RcppRoll)
+```
+
+```{r}
+input_path = '~/repo/adventofcode/2021/day1/input.txt'
+```
+
+
+## Part 1
+
+```{r}
+read_csv(file=input_path, col_names = 'measurement') %>% 
+  mutate(previous = lag(measurement, n=1)) %>% 
+  summarise(sum(measurement > previous, na.rm=T))
+```
+
+
+## Part 2
+
+```{r}
+read_csv(file = input_path, col_names = 'measurement') %>% 
+  mutate(sum_slice= roll_sumr(measurement, n=3)) %>% 
+  mutate(previous_sum_slice = lag(sum_slice, n=1)) %>% 
+  summarise(sum(sum_slice > previous_sum_slice, na.rm=T))
+```
+
